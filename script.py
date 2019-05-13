@@ -46,6 +46,14 @@ def run(filename):
                           'blue': [0.2, 0.5, 0.5]}]
     reflect = '.white'
 
-    print symbols
+    # print symbols
     for command in commands:
-        print command
+        print(command)
+        operation = command['op']
+        arguments = command['args']
+        if operation == "move":
+            print(command)
+            tmp = make_translate(float(arguments[0]), float(arguments[1]), float(arguments[2]))
+            matrix_mult( stack[-1], tmp )
+            stack[-1] = [ x[:] for x in tmp]
+            print("Done")
