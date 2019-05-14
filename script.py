@@ -48,12 +48,56 @@ def run(filename):
 
     # print symbols
     for command in commands:
-        print(command)
+        # print(command)
         operation = command['op']
         arguments = command['args']
-        if operation == "move":
-            print(command)
+        if operation == "push":
+            stack.append( [x[:] for x in stack[-1]] )
+        elif operation == "pop":
+            stack.pop()
+        elif operation == "move":
             tmp = make_translate(float(arguments[0]), float(arguments[1]), float(arguments[2]))
             matrix_mult( stack[-1], tmp )
             stack[-1] = [ x[:] for x in tmp]
-            print("Done")
+        elif operation == "rotate":
+            theta = float(arguments[1]) * (math.pi / 180)
+            if arguments[0] == 'x':
+                tmp = make_rotX(theta)
+            elif arguments[0] == 'y':
+                tmp = make_rotY(theta)
+            else:
+                tmp = make_rotZ(theta)
+            matrix_mult( stack[-1], tmp )
+            stack[-1] = [ x[:] for x in tmp ]
+        elif operation == "scale":
+            tmp = make_scale(float(arguments[0]), float(arguments[1]), float(arguments[2]))
+            matrix_mult( stack[-1], tmp )
+            stack[-1] = [ x[:] for x in tmp]
+        elif operation == "box":
+            polygons = []
+            add_box(polygons,
+                    float(arguments[0]), float(arguments[1]), float(arguments[2]),
+                    float(arguments[3]), float(arguments[4]), float(arguments[5]))
+            matrix_mult( stack[-1], polygons )
+            draw_polygons(polygons, screen, zbuffer, view, ambient, light, areflect, dreflect, sreflect)
+        elif operation == "sphere":
+            polygons = []
+            add_sphere(polygons,
+                       float(arguments[0]), float(arguments[1]), float(arguments[2]),
+                       float(arguments[3]), step_3d)
+            matrix_mult( stack[-1], polygons )
+            draw_polygons(polygons, screen, zbuffer, view, ambient, light, areflect, dreflect, sreflect)
+        elif operation == "torus":
+            polygons = []
+            add_torus(polygons,
+                      float(arguments[0]), float(arguments[1]), float(arguments[2]),
+                      float(arguments[3]), float(arguments[4]), step_3d)
+            matrix_mult( systems[-1], polygons )
+            draw_polygons(polygons, screen, zbuffer, view, ambient, light, areflect, dreflect, sreflect)
+        elif operation == "line":
+            edges = []
+            add_edge( edges,
+                      float(arguments[0]), float(arguments[1]), float(arguments[2]),
+                      float(arguments[3]), float(arguments[4]), float(arguments[5]) )
+            matrix_mult( systems[-1], edges )
+            draw_lines(edges, screen, zbuffer, color)
