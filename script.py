@@ -49,67 +49,67 @@ def run(filename):
     # print symbols
     for command in commands:
         # print(command)
-        operation = command['op']
-        arguments = command['args']
-        if operation == "push":
+        op = command['op']
+        args = command['args']
+        if op == "push":
             stack.append( [x[:] for x in stack[-1]] )
-        elif operation == "pop":
+        elif op == "pop":
             stack.pop()
-        elif operation == "move":
-            tmp = make_translate(float(arguments[0]), float(arguments[1]), float(arguments[2]))
+        elif op == "move":
+            tmp = make_translate(float(args[0]), float(args[1]), float(args[2]))
             matrix_mult( stack[-1], tmp )
             stack[-1] = [ x[:] for x in tmp]
-        elif operation == "rotate":
-            theta = float(arguments[1]) * (math.pi / 180)
-            if arguments[0] == 'x':
+        elif op == "rotate":
+            theta = float(args[1]) * (math.pi / 180)
+            if args[0] == 'x':
                 tmp = make_rotX(theta)
-            elif arguments[0] == 'y':
+            elif args[0] == 'y':
                 tmp = make_rotY(theta)
             else:
                 tmp = make_rotZ(theta)
             matrix_mult( stack[-1], tmp )
             stack[-1] = [ x[:] for x in tmp ]
-        elif operation == "scale":
-            tmp = make_scale(float(arguments[0]), float(arguments[1]), float(arguments[2]))
+        elif op == "scale":
+            tmp = make_scale(float(args[0]), float(args[1]), float(args[2]))
             matrix_mult( stack[-1], tmp )
             stack[-1] = [ x[:] for x in tmp]
-        elif operation == "box":
+        elif op == "box":
             polygons = []
             add_box(polygons,
-                    float(arguments[0]), float(arguments[1]), float(arguments[2]),
-                    float(arguments[3]), float(arguments[4]), float(arguments[5]))
+                    float(args[0]), float(args[1]), float(args[2]),
+                    float(args[3]), float(args[4]), float(args[5]))
             matrix_mult( stack[-1], polygons )
             if command["constants"] != None:
                 draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, command["constants"])
             else:
                 draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, reflect)
-        elif operation == "sphere":
+        elif op == "sphere":
             polygons = []
             add_sphere(polygons,
-                       float(arguments[0]), float(arguments[1]), float(arguments[2]),
-                       float(arguments[3]), step_3d)
+                       float(args[0]), float(args[1]), float(args[2]),
+                       float(args[3]), step_3d)
             matrix_mult( stack[-1], polygons )
             if command["constants"] != None:
                 draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, command["constants"])
             else:
                 draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, reflect)
-        elif operation == "torus":
+        elif op == "torus":
             add_torus(polygons,
-                      float(arguments[0]), float(arguments[1]), float(arguments[2]),
-                      float(arguments[3]), float(arguments[4]), step_3d)
+                      float(args[0]), float(args[1]), float(args[2]),
+                      float(args[3]), float(args[4]), step_3d)
             matrix_mult( stack[-1], polygons )
             if command["constants"] != None:
                 draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, command["constants"])
             else:
                 draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, reflect)
-        elif operation == "line":
+        elif op == "line":
             edges = []
             add_edge( edges,
-                      float(arguments[0]), float(arguments[1]), float(arguments[2]),
-                      float(arguments[3]), float(arguments[4]), float(arguments[5]) )
+                      float(args[0]), float(args[1]), float(args[2]),
+                      float(args[3]), float(args[4]), float(args[5]) )
             matrix_mult( stack[-1], edges )
             draw_lines(edges, screen, zbuffer, color)
-        elif operation == "save":
-            save_extension(screen, arguments[0])
-        elif operation == "display":
+        elif op == "save":
+            save_extension(screen, args[0])
+        elif op == "display":
             display(screen)
