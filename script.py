@@ -94,6 +94,7 @@ def run(filename):
             else:
                 draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, reflect)
         elif op == "torus":
+            polygons = []
             add_torus(polygons,
                       float(args[0]), float(args[1]), float(args[2]),
                       float(args[3]), float(args[4]), step_3d)
