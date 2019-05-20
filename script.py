@@ -73,36 +73,30 @@ def run(filename):
             tmp = make_scale(float(args[0]), float(args[1]), float(args[2]))
             matrix_mult( stack[-1], tmp )
             stack[-1] = [ x[:] for x in tmp]
-        elif op == "box":
+        elif op == "box" or op == "sphere" or op == "torus":
             polygons = []
-            add_box(polygons,
-                    float(args[0]), float(args[1]), float(args[2]),
-                    float(args[3]), float(args[4]), float(args[5]))
+            if op == "box":
+                add_box(polygons,
+                        float(args[0]), float(args[1]), float(args[2]),
+                        float(args[3]), float(args[4]), float(args[5]))
+            if op == "sphere":
+                add_sphere(polygons,
+                           float(args[0]), float(args[1]), float(args[2]),
+                           float(args[3]), step_3d)
+            if op == "torus":
+                add_torus(polygons,
+                          float(args[0]), float(args[1]), float(args[2]),
+                          float(args[3]), float(args[4]), step_3d)
+
             matrix_mult( stack[-1], polygons )
-            if command["constants"] != None:
-                draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, command["constants"])
-            else:
-                draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, reflect)
-        elif op == "sphere":
-            polygons = []
-            add_sphere(polygons,
-                       float(args[0]), float(args[1]), float(args[2]),
-                       float(args[3]), step_3d)
-            matrix_mult( stack[-1], polygons )
-            if command["constants"] != None:
-                draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, command["constants"])
-            else:
-                draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, reflect)
-        elif op == "torus":
-            polygons = []
-            add_torus(polygons,
-                      float(args[0]), float(args[1]), float(args[2]),
-                      float(args[3]), float(args[4]), step_3d)
-            matrix_mult( stack[-1], polygons )
-            if command["constants"] != None:
-                draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, command["constants"])
-            else:
-                draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, reflect)
+            try:
+                if command["constants"] != None:
+                    draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, command["constants"])
+                else:
+                    draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, reflect)
+            except:
+                continue
+
         elif op == "line":
             edges = []
             add_edge( edges,
